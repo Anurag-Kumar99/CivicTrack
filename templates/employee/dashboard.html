@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Employee Dashboard</h3>
+
+<div class="card">
+  <div class="card-header">Assigned Complaints</div>
+
+  <ul class="list-group list-group-flush">
+    {% for c in complaints %}
+      <li class="list-group-item">
+        <strong>{{ c.title }}</strong><br>
+        Status:
+        <span class="badge bg-warning">{{ c.status }}</span><br>
+        User: <strong>{{ c.user.userprofile.full_name }}</strong><br>
+        Description: {{ c.description }} <br>
+        Phone: {{ c.user.userprofile.phone_number }} <br>
+        Location:
+        {{ c.user.userprofile.address }}, {{ c.user.userprofile.city }},
+        {{ c.user.userprofile.state }}, {{ c.user.userprofile.Pincode }} <br>
+
+
+
+        {% if c.status == 'PENDING' %}
+          <form method="post" action="{% url 'accept_complaint' c.id %}" class="mt-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+          </form>
+
+        {% elif c.status != 'RESOLVED' %}
+          <form method="get" action="{% url 'resolve_complaint' c.id %}" class="mt-2">
+            <button type="submit" class="btn btn-sm btn-success">
+               Resolve
+            </button>
+          </form>
+
+
+        {% else %}
+          <span class="text-success">✔ Resolved</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

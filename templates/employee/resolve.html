@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+
+    <div class="card shadow">
+      <div class="card-body">
+
+
+        <h4 class="mb-3 text-center">Resolve Complaint</h4>
+
+        <div class="alert alert-secondary">
+          <strong>User:</strong> {{ complaint.user.userprofile.full_name }} <br>
+          <strong>Phone:</strong> {{ complaint.user.userprofile.phone }} <br>
+          <strong>Location:</strong>
+          {{ complaint.user.userprofile.area }},
+          {{ complaint.user.userprofile.city }},
+          {{ complaint.user.userprofile.pincode }}
+        </div>
+
+
+        <div class="alert alert-info">
+          <strong>{{ complaint.title }}</strong><br>
+          {{ complaint.description }}
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Upload Resolution Proof</label>
+            {{ form.resolved_image }}
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'employee_dashboard' %}" class="btn btn-secondary">
+              Back
+            </a>
+            <button type="submit" class="btn btn-success">
+              Mark as Resolved
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

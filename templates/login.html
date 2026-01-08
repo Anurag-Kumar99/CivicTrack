@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-4">
+
+    <div class="card shadow">
+      <div class="card-body">
+
+        <h4 class="text-center mb-4">Login to CivicTrack</h4>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- Username -->
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" required>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+
+          <!-- Login Type (Portal Selection) -->
+          <div class="mb-3">
+            <label class="form-label">Login As</label>
+            <select name="login_type" class="form-select" required>
+              <option value="">-- Select Portal --</option>
+              <option value="user">Citizen</option>
+              <option value="employee">Employee</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary w-100">Login</button>
+        </form>
+        
+        <div class="text-center mt-3">
+          <span class="text-muted">New here?</span>
+          <a href="{% url 'register' %}" class="btn btn-link">
+            Sign Up
+          </a>
+        </div>
+
+        <p class="text-muted text-center mt-3" style="font-size: 13px;">
+          Citizens can sign up freely.<br>
+          Employees & Admins are provided credentials by the system.
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

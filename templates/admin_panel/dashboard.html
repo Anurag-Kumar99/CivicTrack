@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Admin Dashboard</h3>
+
+<p class="text-muted">
+  Welcome Admin: <strong>{{ request.user.username }}</strong>
+</p>
+
+<div class="mb-3">
+  <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary btn-sm">
+    Go to Django Admin Panel
+  </a>
+
+</div>
+
+<!-- ANALYTICS CARDS -->
+<div class="row mb-4">
+
+  <div class="col-md-4">
+    <a href="{% url 'admin_dashboard' %}" class="text-decoration-none text-dark">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h6>Total Complaints</h6>
+          <h2>{{ total }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="{% url 'admin_dashboard' %}?status=PENDING" class="text-decoration-none text-dark">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h6>Pending Complaints</h6>
+          <h2 class="text-warning">{{ pending }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="{% url 'admin_dashboard' %}?status=RESOLVED" class="text-decoration-none text-dark">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h6>Resolved Complaints</h6>
+          <h2 class="text-success">{{ resolved }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+
+<!-- ALL COMPLAINTS -->
+<div class="card shadow-sm">
+  <div class="card-header">
+    <strong>
+      {% if status_filter %}
+      Showing {{ status_filter }} Complaints
+      {% else %}
+      All Complaints
+      {% endif %}
+    </strong>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    {% for c in complaints %}
+    <li class="list-group-item">
+      <strong>{{ c.title }}</strong><br>
+      <span class="text-muted">
+  {{ c.user.userprofile.city }} / {{ c.user.userprofile.area }}
+</span>
+      <br>
+
+      Status:
+      {% if c.status == 'RESOLVED' %}
+      <span class="badge bg-success">{{ c.status }}</span>
+      {% elif c.status == 'PENDING' %}
+      <span class="badge bg-warning">{{ c.status }}</span>
+      {% else %}
+      <span class="badge bg-info">{{ c.status }}</span>
+      {% endif %}
+      <br>
+
+      {% if not c.assigned_employee %}
+      <form method="post" action="{% url 'assign_complaint' c.id %}" class="mt-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-primary">
+          Assign to Employee
+        </button>
+      </form>
+      {% else %}
+      <span class="text-muted">
+        Assigned to: {{ c.assigned_employee.username }}
+      </span>
+      {% endif %}
+    </li>
+    {% empty %}
+
+    <li class="list-group-item text-muted">
+      No complaints found.
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}
