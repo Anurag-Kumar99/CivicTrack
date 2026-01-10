@@ -11,6 +11,7 @@ class User(AbstractUser):
         ('ADMIN', 'admin'),
     )
     role = models.CharField(max_length=10, choices =ROLE_CHOICES, default='USER')
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -33,6 +34,22 @@ class EmployeeProfile(models.Model):
 
 
 class Complaint(models.Model):
+    CATEGORY_CHOICES =[
+        ('ROAD', 'road'),
+        ('WATER', 'water'),
+        ('ELECTRICITY', 'electricity'),
+        ('SANITATION', 'sanitation'),
+        ('GARBAGE', 'garbage'),
+        ('general', 'general'),
+    ]
+
+    PRIORITY_CHOICES =[
+        ('LOW', 'low'),
+        ('MEDIUM', 'medium'),
+        ('HIGH', 'high'),
+    ]
+
+
     STATUS_CHOICES =(
         ('PENDING', 'pending'),
         ('ACCEPTED', 'accepted'),
@@ -53,6 +70,9 @@ class Complaint(models.Model):
     description = models.TextField()
     user_image = models.ImageField(upload_to='complaint_images/', blank=True, null=True)
     resolved_image = models.ImageField(upload_to='resolved_images/', blank=True, null=True)
+
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='general') 
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='MEDIUM')
 
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')

@@ -7,6 +7,7 @@ from .forms import ComplaintForm
 from .forms import ResolveComplaintForm
 # from django.shortcuts import get_object_or_404
 from .decorators import user_required, employee_required, admin_required
+from django.db.models import Case, When, IntegerField
 
 # Create your views here.
 def home(request):
@@ -99,24 +100,56 @@ def user_dashboard(request):
 @login_required
 @employee_required
 def employee_dashboard(request):
-    complaints = Complaint.objects.filter(assigned_employee=request.user).order_by('-created_at')
+    priority_order = Case(
+        When(priority='HIGH', then=1),
+        When(priority='MEDIUM', then=2),
+        When(priority='LOW', then=3),
+        output_field=IntegerField(),
+    )
+    
+    
+    complaints = Complaint.objects.filter(
+        assigned_employee=request.user
+        ).annotate(
+        priority_rank=priority_order
+    ).order_by('priority_rank', '-created_at')
+        
     return render(request, 'employee/dashboard.html', {'complaints': complaints})
 
 
 @login_required
 @admin_required
 def admin_dashboard(request):
-    status_filter = request.GET.get('status')  # 👈 yahan se aayega
+    status_filter = request.GET.get('status')  
+    category_filter = request.GET.get('category')
 
-    if status_filter == 'PENDING':
-        complaints = Complaint.objects.filter(status='PENDING')
-    elif status_filter == 'RESOLVED':
-        complaints = Complaint.objects.filter(status='RESOLVED')
-    else:
-        complaints = Complaint.objects.all() 
+    proority_order = Case(
+        When(priority='HIGH', then=1),
+        When(priority='MEDIUM', then=2),
+        When(priority='LOW', then=3),
+        output_field=IntegerField(),
+    )
+    complaints = Complaint.objects.annotate(
+        priority_rank=proority_order
+    )
+
+    if status_filter:
+        complaints = complaints.filter(status=status_filter)
+
+    if category_filter:
+        complaints = complaints.filter(category=category_filter)
+
+    complaints = complaints.order_by('priority_rank', '-created_at')
+
+    # if status_filter == 'PENDING':
+    #     complaints = Complaint.objects.filter(status='PENDING')
+    # elif status_filter == 'RESOLVED':
+    #     complaints = Complaint.objects.filter(status='RESOLVED')
+    # else:
+    #     complaints = Complaint.objects.all() 
 
 
-    complaints = complaints.order_by('-created_at')
+    # complaints = complaints.order_by('-created_at')
 
     total = Complaint.objects.count()
     pending = Complaint.objects.filter(status='PENDING').count()
@@ -128,7 +161,8 @@ def admin_dashboard(request):
         'pending': pending,
         'resolved': resolved,
         'complaints': complaints,
-        'status_filter': status_filter
+        'category_filter': category_filter,
+        # 'status_filter': status_filter
 
     })
 
@@ -142,11 +176,20 @@ def user_logout(request):
 def create_complaint(request):
     if request.method == 'POST':
         form = ComplaintForm(request.POST, request.FILES)
+        
         if form.is_valid():
+            
             complaint = form.save(commit=False)
             complaint.user = request.user
+            # Auto-assign employee based on department
+            employee = auto_assign_employee(complaint)
+            if employee:
+                complaint.assigned_employee = employee
+                complaint.status = 'PENDING'
+            
             complaint.save()
             return redirect('user_dashboard')
+           
     else:
         form = ComplaintForm()
     return render(request, 'user/create_complaint.html', {'form': form})
@@ -157,7 +200,6 @@ def accept_complaint(request, id):
     complaint.status = 'ACCEPTED'
     complaint.save()
     return redirect('employee_dashboard')
-
 
 
 
@@ -203,5 +245,18 @@ def assign_complaint(request, id):
          'employees': employess
          })    
 
-
-
+User = get_user_model()
+def auto_assign_employee(complaint):
+    # Get all employees in the same department
+    employees = User.objects.filter(
+        role='EMPLOYEE',
+        department=complaint.department
+    )
+    if employees.exists():
+        # Assign the first available employee
+        return employees.first()
+        # employee = employees.first()
+        # complaint.assigned_employee = employee
+        # complaint.status = 'PENDING'
+        # complaint.save()
+    return None    

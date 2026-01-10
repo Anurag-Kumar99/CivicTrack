@@ -66,14 +66,44 @@
     </strong>
   </div>
 
+  <div class="mb-3">
+    <strong>Filter by Category:</strong>
+
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary">All</a>
+
+    <a href="?category=ROAD" class="btn btn-sm btn-outline-primary">Road</a>
+
+    <a href="?category=WATER" class="btn btn-sm btn-outline-primary">Water</a>
+
+    <a href="?category=ELECTRICITY" class="btn btn-sm btn-outline-primary">Electricity</a>
+
+    <a href="?category=SANITATION" class="btn btn-sm btn-outline-primary">Sanitation</a>
+
+    <a href="?category=GARBAGE" class="btn btn-sm btn-outline-primary">Garbage</a>
+  </div>
+
+
   <ul class="list-group list-group-flush">
     {% for c in complaints %}
     <li class="list-group-item">
       <strong>{{ c.title }}</strong><br>
       <span class="text-muted">
-  {{ c.user.userprofile.city }} / {{ c.user.userprofile.area }}
-</span>
+        {{ c.user.userprofile.city }} / {{ c.user.userprofile.area }}
+      </span>
       <br>
+
+      Category: <strong>{{ c.get_category_display }}</strong><br>
+
+
+      Priority:
+      {% if c.priority == 'HIGH' %}
+      <span class="badge bg-danger">High</span>
+      {% elif c.priority == 'MEDIUM' %}
+      <span class="badge bg-warning">Medium</span>
+      {% else %}
+      <span class="badge bg-success">Low</span>
+      {% endif %} <br>
+
 
       Status:
       {% if c.status == 'RESOLVED' %}

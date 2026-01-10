@@ -13,12 +13,7 @@
           {% csrf_token %}
 
           <div class="mb-3">
-            <label class="form-label">Department</label>
-            {{ form.department }}
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Title</label>
+            <label class="form-label">Complaint Title</label>
             {{ form.title }}
           </div>
 
@@ -26,6 +21,23 @@
             <label class="form-label">Description</label>
             {{ form.description }}
           </div>
+
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            {{ form.category }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Priority</label>
+            {{ form.priority }}
+          </div>
+
+          <!-- {% if form.department %}
+          <div class="mb-3">
+            <label class="form-label">Department</label>
+            {{ form.department }}
+          </div>
+          {% endif %} -->
 
           <div class="mb-3">
             <label class="form-label">Upload Image (optional)</label>
@@ -40,8 +52,8 @@
               Submit Complaint
             </button>
           </div>
-
         </form>
+
 
       </div>
     </div>
