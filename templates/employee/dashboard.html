@@ -43,8 +43,6 @@
           Resolve
         </button>
       </form>
-
-
       {% else %}
       <span class="text-success">✔ Resolved</span>
       {% endif %}
@@ -52,4 +50,48 @@
     {% endfor %}
   </ul>
 </div>
+<div class="card mt-4">
+  <div class="card-body">
+    <h4 class="card-title">Employee Workload Analytics</h4>
+    <div class="table-responsive">
+    <table class="table table-bordered table-sm">
+      <thead class="table-light">
+        <tr>
+          <th>Employee</th>
+          <th>Total</th>
+          <th>Pending</th>
+          <th>Resolved</th>
+          <th>Escalated</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in employees %}
+        <tr>
+          <td>{{ e.username }}</td>
+          <td>{{ e.total_assigned }}</td>
+          <td>{{ e.pending_count }}</td>
+          <td>{{ e.resolved_count }}</td>
+          <td>{{ e.escalated_count }}</td>
+
+          <td>
+            {% if e.pending_count > 5 %}
+            <span class="badge bg-danger">Overloaded</span>
+            {% elif e.pending_count > 0 %}
+            <span class="badge bg-warning">Busy</span>
+            {% else %}
+            <span class="badge bg-success">Available</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+
+  </div>
+</div>
+
+
 {% endblock %}

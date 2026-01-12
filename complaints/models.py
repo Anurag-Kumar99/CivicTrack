@@ -79,6 +79,9 @@ class Complaint(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    escalated = models.BooleanField(default=False)
+    escalated_at = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return f"{self.title} - {self.status}"
 
@@ -101,3 +104,16 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.full_name
 
+class ComplaintLog(models.Model):
+    complaint = models.ForeignKey(
+        Complaint, 
+        on_delete=models.CASCADE, 
+        related_name='logs'
+    )
+
+    action = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Log for Complaint {self.complaint.id} - {self.action}"

@@ -22,7 +22,7 @@
             <select name="employee" class="form-select" required>
               <option value="">-- Select Employee --</option>
               {% for emp in employees %}
-                <option value="{{ emp.id }}">{{ emp.username }}</option>
+              <option value="{{ emp.id }}">{{ emp.username }}</option>
               {% endfor %}
             </select>
           </div>
@@ -38,6 +38,27 @@
 
         </form>
 
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Complaint Timeline</h5>
+        <ul class="list-group">
+          {% for log in complaint.logs.all %}
+          <li class="list-group-item">
+            <strong>{{ log.action }}</strong><br>
+            {{ log.description }}<br>
+            <small class="text-muted">
+              {{ log.created_at|date:"M d, Y H:i" }}
+            </small>
+          </li>
+          {% empty %}
+            <li class="list-group-item text-muted">
+              No activity yet
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
 

@@ -7,9 +7,12 @@ from .forms import ComplaintForm
 from .forms import ResolveComplaintForm
 # from django.shortcuts import get_object_or_404
 from .decorators import user_required, employee_required, admin_required
-from django.db.models import Case, When, IntegerField
+from django.db.models import Case, When, IntegerField, Q, Count
+from django.utils import timezone
+from complaints.utils import get_least_loaded_employee, escalated_high_priority_complaints, log_complaint_action
 
 # Create your views here.
+User = get_user_model()
 def home(request):
     return redirect('register')  
 
@@ -122,6 +125,7 @@ def employee_dashboard(request):
 def admin_dashboard(request):
     status_filter = request.GET.get('status')  
     category_filter = request.GET.get('category')
+    employees = employee_workload_analytics()
 
     proority_order = Case(
         When(priority='HIGH', then=1),
@@ -140,17 +144,6 @@ def admin_dashboard(request):
         complaints = complaints.filter(category=category_filter)
 
     complaints = complaints.order_by('priority_rank', '-created_at')
-
-    # if status_filter == 'PENDING':
-    #     complaints = Complaint.objects.filter(status='PENDING')
-    # elif status_filter == 'RESOLVED':
-    #     complaints = Complaint.objects.filter(status='RESOLVED')
-    # else:
-    #     complaints = Complaint.objects.all() 
-
-
-    # complaints = complaints.order_by('-created_at')
-
     total = Complaint.objects.count()
     pending = Complaint.objects.filter(status='PENDING').count()
     resolved = Complaint.objects.filter(status='RESOLVED').count()
@@ -162,6 +155,7 @@ def admin_dashboard(request):
         'resolved': resolved,
         'complaints': complaints,
         'category_filter': category_filter,
+        'employees': employees,
         # 'status_filter': status_filter
 
     })
@@ -182,12 +176,18 @@ def create_complaint(request):
             complaint = form.save(commit=False)
             complaint.user = request.user
             # Auto-assign employee based on department
-            employee = auto_assign_employee(complaint)
+            # employee = auto_assign_employee(complaint)
+            employee = get_least_loaded_employee(complaint.department)
             if employee:
                 complaint.assigned_employee = employee
                 complaint.status = 'PENDING'
             
             complaint.save()
+            log_complaint_action(
+                complaint,
+                action="Created",
+                description="Complaint raised by user"
+    )
             return redirect('user_dashboard')
            
     else:
@@ -199,6 +199,13 @@ def accept_complaint(request, id):
     complaint = Complaint.objects.get(id=id, assigned_employee=request.user)
     complaint.status = 'ACCEPTED'
     complaint.save()
+    log_complaint_action(
+        complaint,
+        action='Accepted',
+        description=f"Complaint accepted by {request.user.username}"
+    )
+
+
     return redirect('employee_dashboard')
 
 
@@ -213,6 +220,11 @@ def resolve_complaint(request, id):
             resolved = form.save(commit=False)
             resolved.status = 'RESOLVED'
             resolved.save()
+            log_complaint_action(
+                complaint,
+                action='Resolved',
+                description="Complaint resolved successfully"
+            )
             return redirect('employee_dashboard')
 
     else:
@@ -237,6 +249,11 @@ def assign_complaint(request, id):
         complaint.assigned_employee = employee
         complaint.status = 'PENDING'
         complaint.save()
+        log_complaint_action(
+            complaint,
+            action='Assigned',
+            description=f"Assigned to complaint to {employee.username}"
+        )
         messages.success(request, "Complaint assigned successfully.")
         return redirect('admin_dashboard')
 
@@ -245,7 +262,7 @@ def assign_complaint(request, id):
          'employees': employess
          })    
 
-User = get_user_model()
+
 def auto_assign_employee(complaint):
     # Get all employees in the same department
     employees = User.objects.filter(
@@ -255,8 +272,26 @@ def auto_assign_employee(complaint):
     if employees.exists():
         # Assign the first available employee
         return employees.first()
-        # employee = employees.first()
-        # complaint.assigned_employee = employee
-        # complaint.status = 'PENDING'
-        # complaint.save()
-    return None    
+        
+    return None
+    
+def employee_workload_analytics():
+    employees = User.objects.filter(role='EMPLOYEE').annotate(
+        total_assigned=Count('assigned_complaints'),
+        pending_count=Count(
+            'assigned_complaints',
+            filter=Q(assigned_complaints__status='PENDING')
+
+        ),
+        resolved_count=Count(
+            'assigned_complaints',
+            filter=Q(assigned_complaints__status='RESOLVED')
+
+        ),
+        escalated_count=Count(
+            'assigned_complaints',
+            filter=Q(assigned_complaints__status=True)
+        ),
+    ) 
+
+    return employees       

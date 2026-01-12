@@ -104,6 +104,9 @@
       <span class="badge bg-success">Low</span>
       {% endif %} <br>
 
+      {% if c.escalated %}
+      <span class="badge bg-danger">ESCALATED</span>
+      {% endif %}
 
       Status:
       {% if c.status == 'RESOLVED' %}
@@ -114,6 +117,14 @@
       <span class="badge bg-info">{{ c.status }}</span>
       {% endif %}
       <br>
+
+      {% if c.escalated %}
+      <small class="text-danger">
+        Escalated on {{ c.escalated_at|date:"M d, Y H:i" }}
+      </small>
+      <br>
+      {% endif %}
+
 
       {% if not c.assigned_employee %}
       <form method="post" action="{% url 'assign_complaint' c.id %}" class="mt-2">
