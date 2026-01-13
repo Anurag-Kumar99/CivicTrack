@@ -1,59 +1,100 @@
-#  CivicTrack – Smart Complaint Management System
+# CivicTrack – Smart Complaint Management System
 
-CivicTrack is a web-based complaint management system designed to provide a transparent and structured way for citizens to report civic issues and for authorities to resolve them efficiently. The system focuses on real-world workflows, role-based access, and secure data handling.
+CivicTrack is a role-based web application built with Django that helps citizens raise civic complaints and enables government employees and administrators to manage, assign, track, and resolve those complaints efficiently.
 
----
+The system focuses on transparency, automation, and accountability in civic issue handling.
 
-## Features
+##  Features
+###  User (Citizen)
 
-###  User Module
-- User registration with personal and location details
-- Raise civic complaints (road, sanitation, water, electricity, etc.)
-- Track complaint status in real time
-- View complaint history in a clean dashboard
+Register and log in securely
 
-###  Admin Module
-- View all registered complaints
-- Dashboard with complaint analytics (Total, Pending, Resolved)
-- Filter complaints by status
-- Assign complaints to employees
-- Full system control with role-based authorization
+Raise complaints with:
 
-###  Employee Module
-- View only assigned complaints
-- See complete user details including location
-- Accept complaints and update status
-- Resolve complaints with proof upload
+Title & description
 
----
+Category (Pothole, Garbage, Water Leak, etc.)
 
-##  Tech Stack
+Priority (Low / Medium / High)
 
-- **Backend:** Django (Python)
-- **Frontend:** HTML, CSS, Bootstrap
-- **Database:** SQLite (can be upgraded to PostgreSQL/MySQL)
-- **Architecture:** MVT (Model–View–Template)
-- **Authentication:** Django Authentication System
+Department (Road, Water, Electricity, etc.)
 
----
+Optional image upload
 
-##  Security Features
+Track complaint status in real time
 
-- Role-based access control (User, Employee, Admin)
-- CSRF protection for all POST requests
-- Secure session management
-- Authentication and authorization using Django
+### Employee
 
----
+View complaints assigned to their department
 
-##  Project Design Highlights
+Accept and resolve complaints
 
-- Separate `UserProfile` model for storing personal and location data
-- Clean separation of authentication and business logic
-- Real-world complaint lifecycle (Pending → In Progress → Resolved)
-- Scalable and interview-ready project structure
+Upload proof image while resolving
 
----
+See only relevant complaints (role-based access)
 
-##  Project Structure (Simplified)
+### Admin
 
+View all complaints with analytics
+
+Filter complaints by:
+
+Status
+
+Category
+
+Priority
+
+Auto-assign complaints to employees
+
+Manual assignment if required
+
+Monitor employee workload
+
+Escalation for high-priority unresolved complaints
+
+### Smart Automation
+
+Auto-assignment of complaints to the least-loaded employee based on department
+
+Priority-based sorting (High → Medium → Low)
+
+Escalation system for high-priority complaints not resolved in time
+
+Email notifications on assignment and escalation
+
+Action logs for complaint lifecycle tracking
+
+### Project Architecture
+
+User: Authentication & roles (User / Employee / Admin)
+
+EmployeeProfile: Stores department and workload metadata
+
+Complaint: Core complaint data and workflow
+
+Department: Government departments
+
+Utilities Layer:
+
+Auto-assign logic
+
+Escalation logic
+
+Email notifications
+
+Employee metadata is intentionally separated from User to keep authentication and business logic clean.
+
+### Tech Stack
+
+Backend: Django, Django ORM
+
+Frontend: HTML, Bootstrap
+
+Database: SQLite (can be upgraded to PostgreSQL)
+
+Authentication: Django Auth
+
+Email: Django Email Backend
+
+Security: CSRF protection, role-based access
