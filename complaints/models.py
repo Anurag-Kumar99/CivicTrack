@@ -58,7 +58,7 @@ class Complaint(models.Model):
 
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='complaints')
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     assigned_employee = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

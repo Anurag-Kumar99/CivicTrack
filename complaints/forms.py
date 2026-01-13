@@ -1,10 +1,16 @@
 from django import forms
-from .models import Complaint
+from .models import Complaint, Department
 
 class ComplaintForm(forms.ModelForm):
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.all(),
+        empty_label="Select Department",
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
     class Meta:
         model= Complaint
-        fields = ['title', 'description', 'category', 'priority', 'user_image']
+        fields = ['department', 'title', 'description', 'category', 'priority', 'user_image']
 
         widgets = {
             'title' : forms.TextInput(attrs={

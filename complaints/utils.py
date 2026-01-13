@@ -3,6 +3,11 @@ from datetime import timedelta
 from .models import Complaint, ComplaintLog
 from django.db.models import Q, Count
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.conf import settings
+from .emails import send_escalation_email
+from complaints.models import EmployeeProfile
+
 
 User = get_user_model()
 
@@ -22,6 +27,7 @@ def escalated_high_priority_complaints():
         complaint.escalated_at = timezone.now()
         complaint.status = 'ESCALATED'
         complaint.save()
+        send_escalation_email(complaint)
         log_complaint_action(
             complaint,
             action="Escalated",
@@ -29,18 +35,25 @@ def escalated_high_priority_complaints():
         )
 
 def get_least_loaded_employee(department):
-    employees = (
-        User.objects.filter(role='EMPLOYEE', department=department)
+    if not department:
+        return None
+
+    profiles = (
+        EmployeeProfile.objects
+        .filter(department=department)
         .annotate(
             pending_count=Count(
-                'assigned_complaints',
-                filter=Q(assigned_complaints__status='PENDING')
+                'user__assigned_complaints',
+                filter=Q(user__assigned_complaints__status='PENDING')
             )
         )
-        .order_by('pending_count', 'id') #least pending first
-    ) 
+        .order_by('pending_count', 'id')  # least workload first
+    )
 
-    return employees.first() if employees.exists() else None     
+    if profiles.exists():
+        return profiles.first().user   # 👈 IMPORTANT
+    return None
+
 
 
 def log_complaint_action(complaint, action, description=""):
@@ -49,3 +62,5 @@ def log_complaint_action(complaint, action, description=""):
         action=action,
         description=description
     )
+
+

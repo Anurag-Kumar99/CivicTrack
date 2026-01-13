@@ -10,6 +10,8 @@ from .decorators import user_required, employee_required, admin_required
 from django.db.models import Case, When, IntegerField, Q, Count
 from django.utils import timezone
 from complaints.utils import get_least_loaded_employee, escalated_high_priority_complaints, log_complaint_action
+from .emails import send_assignment_email
+
 
 # Create your views here.
 User = get_user_model()
@@ -141,7 +143,7 @@ def admin_dashboard(request):
         complaints = complaints.filter(status=status_filter)
 
     if category_filter:
-        complaints = complaints.filter(category=category_filter)
+        complaints = complaints.filter(department__name__iexact=category_filter)
 
     complaints = complaints.order_by('priority_rank', '-created_at')
     total = Complaint.objects.count()
@@ -178,16 +180,24 @@ def create_complaint(request):
             # Auto-assign employee based on department
             # employee = auto_assign_employee(complaint)
             employee = get_least_loaded_employee(complaint.department)
+            print("Complaint Dept:", complaint.department)
+            if employee:
+                print("Assigned Employee Dept:", employee.department)
+            else:
+                print("No employee found for this department")
             if employee:
                 complaint.assigned_employee = employee
                 complaint.status = 'PENDING'
             
             complaint.save()
+                
             log_complaint_action(
                 complaint,
                 action="Created",
                 description="Complaint raised by user"
-    )
+           ) 
+            if employee:
+                send_assignment_email(employee, complaint)
             return redirect('user_dashboard')
            
     else:
