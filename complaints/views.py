@@ -21,6 +21,7 @@ def home(request):
 def user_register(request):
     if request.method == 'POST' :
         username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
         full_name = request.POST.get('full_name')
@@ -34,8 +35,13 @@ def user_register(request):
             messages.error(request, "Username already exists.")
             return render(request, 'register.html')
 
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return render(request, 'register.html')
+
         user = User.objects.create_user(
             username=username,
+            email=email,
             password=password,
             role='USER'
         )    
@@ -190,6 +196,7 @@ def create_complaint(request):
                 complaint.status = 'PENDING'
             
             complaint.save()
+
                 
             log_complaint_action(
                 complaint,
@@ -235,7 +242,7 @@ def resolve_complaint(request, id):
                 action='Resolved',
                 description="Complaint resolved successfully"
             )
-            return redirect('employee_dashboard')
+        return redirect('employee_dashboard')
 
     else:
         form = ResolveComplaintForm(instance=complaint)

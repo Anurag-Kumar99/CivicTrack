@@ -10,6 +10,12 @@ class User(AbstractUser):
         ('EMPLOYEE', 'employee'),
         ('ADMIN', 'admin'),
     )
+    email = models.EmailField(unique=True)
+    
+    def clean(self):
+        if self.role == 'EMPLOYEE' and not self.email:
+            raise ValidationError("Employee must have an email address.")
+
     role = models.CharField(max_length=10, choices =ROLE_CHOICES, default='USER')
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
 
