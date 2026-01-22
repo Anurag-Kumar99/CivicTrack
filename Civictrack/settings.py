@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-n4b%9)1!9@96)h)*^e$#n(x%tq#ayfe*&ag+gc3&_5(1uc64pz
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.up.railway.app",
+]
+
 
 AUTH_USER_MODEL = 'complaints.User'
 
