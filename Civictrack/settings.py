@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-n4b%9)1!9@96)h)*^e$#n(x%tq#ayfe*&ag+gc3&_5(1uc64pz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'complaints.User'
 
@@ -123,6 +123,8 @@ USE_TZ = True
 DJANGO_SETTINGS_MODULE = 'Civictrack.settings'
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
