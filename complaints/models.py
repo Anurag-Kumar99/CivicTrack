@@ -33,13 +33,27 @@ class Department(models.Model):
 
 class EmployeeProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self):
-        return f"{self.user.username} - {self.department.name}"
+        if self.department:
+            return f"{self.user.username} - {self.department.name}"
+        return f"{self.user.username} - No Department"
 
 
 class Complaint(models.Model):
+
+
+    source = models.CharField(
+        max_length=20,
+        choices=(
+            ('MANUAL', 'Manual'),
+            ('OCR', 'OCR')),
+            default='MANUAL'
+        
+    )
+    auto_assigned = models.BooleanField(default=False)
+
     CATEGORY_CHOICES =[
         ('ROAD', 'road'),
         ('WATER', 'water'),
@@ -64,7 +78,7 @@ class Complaint(models.Model):
 
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='complaints')
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     assigned_employee = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

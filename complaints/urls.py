@@ -18,6 +18,7 @@ path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
 path('dashboard/admin/assign/<int:id>/', views.assign_complaint, name='assign_complaint'),
 
 path('user/complaint/new/', views.create_complaint, name='create_complaint'),
+path('user/complaint/image/', views.create_complaint_from_image, name='complaint_from_image'),
 
 path('employee/accept/<int:id>/', views.accept_complaint, name='accept_complaint'),
 path('employee/resolve/<int:id>/', views.resolve_complaint, name='resolve_complaint'),

@@ -11,7 +11,11 @@ from django.db.models import Case, When, IntegerField, Q, Count
 from django.utils import timezone
 from complaints.utils import get_least_loaded_employee, escalated_high_priority_complaints, log_complaint_action
 from .emails import send_assignment_email
+from .ocr.reader import extract_text_from_image, clean_text
+from .services.predictor import predict_department_from_text, predict_priority_from_text
+import pytesseract
 
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Create your views here.
 User = get_user_model()
@@ -210,6 +214,49 @@ def create_complaint(request):
     else:
         form = ComplaintForm()
     return render(request, 'user/create_complaint.html', {'form': form})
+
+
+@login_required 
+def create_complaint_from_image(request):
+    if request.method == 'POST':
+        image = request.FILES['complaint_image']
+
+        raw_text = extract_text_from_image(image)
+        cleaned_text = clean_text(raw_text)
+
+        dept_name = predict_department_from_text(cleaned_text)
+        priority = predict_priority_from_text(cleaned_text)
+
+        complaint = Complaint.objects.create(
+            user=request.user,
+            description=cleaned_text or "OCR text not readable",
+            priority=priority,
+            source='OCR',
+            status='PENDING'
+        )
+
+        if cleaned_text.strip():   # 👈 text hai tab hi auto assign
+            dept_name = predict_department_from_text(cleaned_text)
+
+        if dept_name != 'GENERAL':
+            try:
+                department = Department.objects.get(name__iexact=dept_name)
+                employee = get_least_loaded_employee(department)
+
+                if employee:
+                    complaint.department = department
+                    complaint.assigned_employee = employee
+                    complaint.status = 'PENDING'
+                    complaint.auto_assigned = True
+                    
+                
+            except Department.DoesNotExist:
+                pass
+
+        complaint.save()
+        return redirect('user_dashboard')
+    return render(request, 'user/upload_complaint_image.html')
+
 
 @login_required
 def accept_complaint(request, id):

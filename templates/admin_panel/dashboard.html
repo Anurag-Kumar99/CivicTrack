@@ -134,10 +134,23 @@
         </button>
       </form>
       {% else %}
-      <span class="text-muted">
-        Assigned to: {{ c.assigned_employee.username }}
-      </span>
+      <div class="mt-1">
+        <span class="text-muted">
+          Assigned to: <strong>{{ c.assigned_employee.username }}</strong>
+        </span>
+
+        {% if c.source == 'OCR' %}
+        <span class="badge bg-info">OCR</span>
+        {% endif %}
+
+        {% if c.auto_assigned %}
+        <span class="badge bg-success ms-2">Auto Assigned</span>
+        {% else %}
+        <span class="badge bg-secondary ms-2">Manual</span>
+        {% endif %}
+      </div>
       {% endif %}
+
     </li>
     {% empty %}
 

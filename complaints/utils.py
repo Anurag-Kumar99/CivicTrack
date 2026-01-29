@@ -35,6 +35,8 @@ def escalated_high_priority_complaints():
         )
 
 def get_least_loaded_employee(department):
+   
+
     if not department:
         return None
 
@@ -49,9 +51,9 @@ def get_least_loaded_employee(department):
         )
         .order_by('pending_count', 'id')  # least workload first
     )
-
+   
     if profiles.exists():
-        return profiles.first().user   # 👈 IMPORTANT
+        return profiles.first().user  
     return None
 
 
