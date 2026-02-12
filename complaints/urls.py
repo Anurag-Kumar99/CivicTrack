@@ -23,3 +23,6 @@ path('user/complaint/image/', views.create_complaint_from_image, name='complaint
 path('employee/accept/<int:id>/', views.accept_complaint, name='accept_complaint'),
 path('employee/resolve/<int:id>/', views.resolve_complaint, name='resolve_complaint'),
 ]
+
+
+# celery -A Civictrack worker -l info --pool=solo

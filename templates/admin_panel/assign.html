@@ -2,24 +2,26 @@
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-6">
+  <div class="col-lg-7">
 
-    <div class="card shadow">
-      <div class="card-body">
+    <div class="card card-ct overflow-hidden">
+      <div class="card-ct-header text-center">
+        <div class="h4 mb-0 fw-700">Assign Complaint</div>
+        <div class="text-muted small mt-1 fw-500">Assign to an employee</div>
+      </div>
+      <div class="card-body p-4">
 
-        <h4 class="mb-3 text-center">Assign Complaint</h4>
-
-        <div class="alert alert-warning">
-          <strong>{{ complaint.title }}</strong><br>
-          {{ complaint.description }}
+        <div class="alert alert-warning alert-ct mb-4">
+          <strong>{{ complaint.title }}</strong>
+          <p class="mb-0 mt-1 small">{{ complaint.description }}</p>
         </div>
 
         <form method="post">
           {% csrf_token %}
 
-          <div class="mb-3">
-            <label class="form-label">Select Employee</label>
-            <select name="employee" class="form-select" required>
+          <div class="mb-4">
+            <label class="form-label fw-500">Select Employee</label>
+            <select name="employee" class="form-select form-select-lg" required>
               <option value="">-- Select Employee --</option>
               {% for emp in employees %}
               <option value="{{ emp.id }}">{{ emp.username }}</option>
@@ -27,39 +29,28 @@
             </select>
           </div>
 
-          <div class="d-flex justify-content-between">
-            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
-              Back
-            </a>
-            <button type="submit" class="btn btn-primary">
-              Assign Complaint
-            </button>
+          <div class="d-flex justify-content-between gap-2">
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">Back</a>
+            <button type="submit" class="btn btn-ct-primary px-4">Assign Complaint</button>
           </div>
-
         </form>
 
       </div>
     </div>
 
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5>Complaint Timeline</h5>
-        <ul class="list-group">
-          {% for log in complaint.logs.all %}
-          <li class="list-group-item">
-            <strong>{{ log.action }}</strong><br>
-            {{ log.description }}<br>
-            <small class="text-muted">
-              {{ log.created_at|date:"M d, Y H:i" }}
-            </small>
-          </li>
-          {% empty %}
-            <li class="list-group-item text-muted">
-              No activity yet
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
+    <div class="card card-ct mt-4 overflow-hidden">
+      <div class="card-ct-header">Complaint Timeline</div>
+      <ul class="list-group list-group-flush">
+        {% for log in complaint.logs.all %}
+        <li class="list-group-item py-3">
+          <strong>{{ log.action }}</strong>
+          <p class="text-muted small mb-0 mt-1">{{ log.description }}</p>
+          <small class="text-muted">{{ log.created_at|date:"M d, Y H:i" }}</small>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-center text-muted py-4">No activity yet</li>
+        {% endfor %}
+      </ul>
     </div>
 
   </div>

@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  django:
+    build: .
+    container_name: civictrack_web
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    command: python manage.py runserver 0.0.0.0:8000
+
+  redis:
+    image: redis:7
+    container_name: civictrack_redis
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    container_name: civictrack_celery
+    command: celery -A Civictrack worker -l info
+    depends_on:
+      - redis

@@ -1,68 +1,101 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
+<div class="ct-split">
+  <section class="ct-hero">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <span class="ct-brand-mark fw-800">CT</span>
+      <div class="fw-800">CivicTrack</div>
+    </div>
 
-    <div class="card shadow">
-      <div class="card-body">
+    <h1 class="mb-3">A modern portal for public complaint management</h1>
+    <p class="text-muted mb-4">
+      Register a civic complaint, track progress in real-time, and help improve community services with transparent status updates.
+    </p>
 
-        <h4 class="text-center mb-4">Citizen Registration</h4>
+    <div class="d-flex flex-wrap gap-2 mb-4">
+      <a href="{% url 'register' %}" class="btn btn-ct-primary btn-lg">Register Complaint</a>
+      <a href="{% url 'login' %}" class="btn btn-ct-soft btn-lg">Track Complaint</a>
+    </div>
 
+    <div class="ct-feature-grid">
+      <div class="ct-feature">
+        <div class="ct-feature-title">Report Issue</div>
+        <div class="text-muted small">Road, water, electricity, sanitation and more.</div>
+      </div>
+      <div class="ct-feature">
+        <div class="ct-feature-title">Track Status</div>
+        <div class="text-muted small">Pending, In Progress, Resolved—always visible.</div>
+      </div>
+      <div class="ct-feature">
+        <div class="ct-feature-title">Community Impact</div>
+        <div class="text-muted small">Build accountability through clear workflows.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card card-ct overflow-hidden">
+      <div class="card-ct-header">
+        Citizen Registration
+        <div class="text-muted fw-500 small mt-1">Create your CivicTrack account</div>
+      </div>
+      <div class="card-body p-4">
         <form method="post">
           {% csrf_token %}
 
-          <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" required>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-500">Username</label>
+              <input type="text" name="username" class="form-control" placeholder="Choose a username" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-500">Email</label>
+              <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-500">Password</label>
+              <input type="password" name="password" class="form-control" placeholder="Create a password" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-500">Full Name</label>
+              <input type="text" name="full_name" class="form-control" placeholder="Your full name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-500">Phone</label>
+              <input type="text" name="phone" class="form-control" placeholder="Phone number" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-500">Pincode</label>
+              <input type="text" name="pincode" class="form-control" placeholder="Pincode" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-500">State</label>
+              <input type="text" name="state" class="form-control" placeholder="State" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-500">City</label>
+              <input type="text" name="city" class="form-control" placeholder="City" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-500">Area</label>
+              <input type="text" name="area" class="form-control" placeholder="Area / Locality" required>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" class="form-control" required>
+          <div class="mt-4">
+            <button class="btn btn-ct-primary btn-lg w-100 py-2 fw-600">Register</button>
           </div>
-
-          <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Full Name</label>
-            <input type="text" name="full_name" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input type="text" name="phone" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">State</label>
-            <input type="text" name="state" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">City</label>
-            <input type="text" name="city" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Area</label>
-            <input type="text" name="area" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Pincode</label>
-            <input type="text" name="pincode" class="form-control" required>
-          </div>
-
-          <button class="btn btn-success w-100">Register</button>
         </form>
 
-        <p class="text-center mt-3">
-          Already registered?
-          <a href="{% url 'login' %}">Login</a>
-        </p>
+        <hr class="my-4">
 
+        <p class="text-center mb-0">
+          Already registered?
+          <a href="{% url 'login' %}" class="text-decoration-none fw-600">Login</a>
+        </p>
       </div>
     </div>
-
-  </div>
+  </section>
 </div>
 {% endblock %}

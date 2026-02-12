@@ -2,163 +2,154 @@
 
 {% block content %}
 
-<h3 class="mb-4">Admin Dashboard</h3>
+<div class="ct-dashboard">
+  <aside class="ct-sidebar">
+    <div class="ct-sidebar-header">
+      <div class="fw-800">Admin Portal</div>
+      <div class="ct-nav-muted">Analytics, assignment, oversight</div>
+    </div>
+    <nav class="ct-nav">
+      <a href="{% url 'admin_dashboard' %}">
+        <span class="fw-600">Overview</span>
+        <span class="ct-nav-muted">KPIs</span>
+      </a>
+      <a href="{% url 'admin_dashboard' %}?status=PENDING">
+        <span class="fw-600">Pending</span>
+        <span class="ct-nav-muted">Queue</span>
+      </a>
+      <a href="{% url 'admin_dashboard' %}?status=RESOLVED">
+        <span class="fw-600">Resolved</span>
+        <span class="ct-nav-muted">Closed</span>
+      </a>
+      <a href="{% url 'admin:index' %}">
+        <span class="fw-600">Django Admin</span>
+        <span class="ct-nav-muted">System</span>
+      </a>
+    </nav>
+  </aside>
 
-<p class="text-muted">
-  Welcome Admin: <strong>{{ request.user.username }}</strong>
-</p>
-
-<div class="mb-3">
-  <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary btn-sm">
-    Go to Django Admin Panel
-  </a>
-
-</div>
-
-<!-- ANALYTICS CARDS -->
-<div class="row mb-4">
-
-  <div class="col-md-4">
-    <a href="{% url 'admin_dashboard' %}" class="text-decoration-none text-dark">
-      <div class="card text-center shadow-sm">
-        <div class="card-body">
-          <h6>Total Complaints</h6>
-          <h2>{{ total }}</h2>
-        </div>
+  <main>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+      <div>
+        <h3 class="fw-700 mb-1">Admin Dashboard</h3>
+        <p class="text-muted small mb-0">Welcome, <strong>{{ request.user.username }}</strong></p>
       </div>
-    </a>
-  </div>
+      <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary btn-sm">Django Admin Panel</a>
+    </div>
 
-  <div class="col-md-4">
-    <a href="{% url 'admin_dashboard' %}?status=PENDING" class="text-decoration-none text-dark">
-      <div class="card text-center shadow-sm">
-        <div class="card-body">
-          <h6>Pending Complaints</h6>
-          <h2 class="text-warning">{{ pending }}</h2>
-        </div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <a href="{% url 'admin_dashboard' %}" class="text-decoration-none">
+          <div class="card card-ct text-center h-100">
+            <div class="card-body py-4">
+              <h6 class="text-muted text-uppercase small mb-2">Total Complaints</h6>
+              <h2 class="mb-0 fw-700 text-dark">{{ total }}</h2>
+            </div>
+          </div>
+        </a>
       </div>
-    </a>
-  </div>
-
-  <div class="col-md-4">
-    <a href="{% url 'admin_dashboard' %}?status=RESOLVED" class="text-decoration-none text-dark">
-      <div class="card text-center shadow-sm">
-        <div class="card-body">
-          <h6>Resolved Complaints</h6>
-          <h2 class="text-success">{{ resolved }}</h2>
-        </div>
+      <div class="col-md-4">
+        <a href="{% url 'admin_dashboard' %}?status=PENDING" class="text-decoration-none">
+          <div class="card card-ct text-center h-100">
+            <div class="card-body py-4">
+              <h6 class="text-muted text-uppercase small mb-2">Pending</h6>
+              <h2 class="mb-0 fw-700 text-warning">{{ pending }}</h2>
+            </div>
+          </div>
+        </a>
       </div>
-    </a>
-  </div>
+      <div class="col-md-4">
+        <a href="{% url 'admin_dashboard' %}?status=RESOLVED" class="text-decoration-none">
+          <div class="card card-ct text-center h-100">
+            <div class="card-body py-4">
+              <h6 class="text-muted text-uppercase small mb-2">Resolved</h6>
+              <h2 class="mb-0 fw-700 text-success">{{ resolved }}</h2>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
 
-</div>
-
-
-<!-- ALL COMPLAINTS -->
-<div class="card shadow-sm">
-  <div class="card-header">
-    <strong>
-      {% if status_filter %}
-      Showing {{ status_filter }} Complaints
-      {% else %}
-      All Complaints
-      {% endif %}
-    </strong>
-  </div>
-
-  <div class="mb-3">
-    <strong>Filter by Category:</strong>
-
-    <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary">All</a>
-
-    <a href="?category=ROAD" class="btn btn-sm btn-outline-primary">Road</a>
-
-    <a href="?category=WATER" class="btn btn-sm btn-outline-primary">Water</a>
-
-    <a href="?category=ELECTRICITY" class="btn btn-sm btn-outline-primary">Electricity</a>
-
-    <a href="?category=SANITATION" class="btn btn-sm btn-outline-primary">Sanitation</a>
-
-    <a href="?category=GARBAGE" class="btn btn-sm btn-outline-primary">Garbage</a>
-  </div>
-
-
-  <ul class="list-group list-group-flush">
-    {% for c in complaints %}
-    <li class="list-group-item">
-      <strong>{{ c.title }}</strong><br>
-      <span class="text-muted">
-        {{ c.user.userprofile.city }} / {{ c.user.userprofile.area }}
-      </span>
-      <br>
-
-      Category: <strong>{{ c.get_category_display }}</strong><br>
-
-
-      Priority:
-      {% if c.priority == 'HIGH' %}
-      <span class="badge bg-danger">High</span>
-      {% elif c.priority == 'MEDIUM' %}
-      <span class="badge bg-warning">Medium</span>
-      {% else %}
-      <span class="badge bg-success">Low</span>
-      {% endif %} <br>
-
-      {% if c.escalated %}
-      <span class="badge bg-danger">ESCALATED</span>
-      {% endif %}
-
-      Status:
-      {% if c.status == 'RESOLVED' %}
-      <span class="badge bg-success">{{ c.status }}</span>
-      {% elif c.status == 'PENDING' %}
-      <span class="badge bg-warning">{{ c.status }}</span>
-      {% else %}
-      <span class="badge bg-info">{{ c.status }}</span>
-      {% endif %}
-      <br>
-
-      {% if c.escalated %}
-      <small class="text-danger">
-        Escalated on {{ c.escalated_at|date:"M d, Y H:i" }}
-      </small>
-      <br>
-      {% endif %}
-
-
-      {% if not c.assigned_employee %}
-      <form method="post" action="{% url 'assign_complaint' c.id %}" class="mt-2">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-sm btn-primary">
-          Assign to Employee
-        </button>
-      </form>
-      {% else %}
-      <div class="mt-1">
-        <span class="text-muted">
-          Assigned to: <strong>{{ c.assigned_employee.username }}</strong>
-        </span>
-
-        {% if c.source == 'OCR' %}
-        <span class="badge bg-info">OCR</span>
-        {% endif %}
-
-        {% if c.auto_assigned %}
-        <span class="badge bg-success ms-2">Auto Assigned</span>
+    <div class="card card-ct overflow-hidden">
+      <div class="card-ct-header">
+        {% if status_filter %}
+        {{ status_filter }} Complaints
         {% else %}
-        <span class="badge bg-secondary ms-2">Manual</span>
+        All Complaints
         {% endif %}
       </div>
-      {% endif %}
 
-    </li>
-    {% empty %}
+      <div class="card-body border-bottom bg-light">
+        <span class="small text-muted fw-500">Filter by category:</span>
+        <div class="d-flex flex-wrap gap-1 mt-2">
+          <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary">All</a>
+          <a href="?category=ROAD" class="btn btn-sm btn-outline-primary">Road</a>
+          <a href="?category=WATER" class="btn btn-sm btn-outline-primary">Water</a>
+          <a href="?category=ELECTRICITY" class="btn btn-sm btn-outline-primary">Electricity</a>
+          <a href="?category=SANITATION" class="btn btn-sm btn-outline-primary">Sanitation</a>
+          <a href="?category=GARBAGE" class="btn btn-sm btn-outline-primary">Garbage</a>
+        </div>
+      </div>
 
-    <li class="list-group-item text-muted">
-      No complaints found.
-    </li>
-    {% endfor %}
-  </ul>
+      <ul class="list-group list-group-flush">
+        {% for c in complaints %}
+        <li class="list-group-item py-3">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <strong class="text-dark">{{ c.title }}</strong>
+            <div class="d-flex flex-wrap gap-1">
+              {% if c.priority == 'HIGH' %}
+              <span class="badge bg-danger">High</span>
+              {% elif c.priority == 'MEDIUM' %}
+              <span class="badge bg-warning text-dark">Medium</span>
+              {% else %}
+              <span class="badge bg-success">Low</span>
+              {% endif %}
+              {% if c.status == 'RESOLVED' %}
+              <span class="badge bg-success">Resolved</span>
+              {% elif c.status == 'PENDING' %}
+              <span class="badge bg-warning text-dark">Pending</span>
+              {% else %}
+              <span class="badge bg-info">In Progress</span>
+              {% endif %}
+              {% if c.escalated %}
+              <span class="badge bg-danger">Escalated</span>
+              {% endif %}
+              {% if c.source == 'OCR' %}
+              <span class="badge bg-info">OCR</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <p class="text-muted small mb-2 mt-1">
+            {{ c.user.userprofile.city }} / {{ c.user.userprofile.area }} · {{ c.get_category_display }}
+          </p>
+
+          {% if c.escalated %}
+          <small class="text-danger d-block mb-2">Escalated {{ c.escalated_at|date:"M d, Y H:i" }}</small>
+          {% endif %}
+
+          {% if not c.assigned_employee %}
+          <form method="post" action="{% url 'assign_complaint' c.id %}" class="d-inline mt-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-ct-primary">Assign to Employee</button>
+          </form>
+          {% else %}
+          <div class="small text-muted mt-2">
+            Assigned to <strong>{{ c.assigned_employee.username }}</strong>
+            {% if c.auto_assigned %}
+            <span class="badge bg-success ms-1">Auto</span>
+            {% else %}
+            <span class="badge bg-secondary ms-1">Manual</span>
+            {% endif %}
+          </div>
+          {% endif %}
+        </li>
+        {% empty %}
+        <li class="list-group-item text-center text-muted py-5">No complaints found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </main>
 </div>
 
 {% endblock %}

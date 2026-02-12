@@ -1,33 +1,57 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
+<div class="ct-split">
+  <section class="ct-hero">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <span class="ct-brand-mark fw-800">CT</span>
+      <div class="fw-800">CivicTrack</div>
+    </div>
 
-    <div class="card shadow">
-      <div class="card-body">
+    <h1 class="mb-3">Sign in to manage and track civic issues</h1>
+    <p class="text-muted mb-4">
+      Citizens can raise and track complaints. Employees and admins can manage assignment, progress, and resolution—role-based.
+    </p>
 
-        <h4 class="text-center mb-4">Login to CivicTrack</h4>
+    <div class="ct-feature-grid">
+      <div class="ct-feature">
+        <div class="ct-feature-title">Secure Access</div>
+        <div class="text-muted small">Role-based portals for citizens and officials.</div>
+      </div>
+      <div class="ct-feature">
+        <div class="ct-feature-title">Clear Status</div>
+        <div class="text-muted small">Pending, In Progress, Resolved with badges.</div>
+      </div>
+      <div class="ct-feature">
+        <div class="ct-feature-title">Faster Resolution</div>
+        <div class="text-muted small">Streamlined assignment and workflow visibility.</div>
+      </div>
+    </div>
+  </section>
 
+  <section>
+    <div class="card card-ct overflow-hidden">
+      <div class="card-ct-header">
+        Welcome back
+        <div class="text-muted fw-500 small mt-1">Sign in to CivicTrack</div>
+      </div>
+      <div class="card-body p-4">
         <form method="post">
           {% csrf_token %}
 
-          <!-- Username -->
           <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" required>
+            <label class="form-label fw-500">Username</label>
+            <input type="text" name="username" class="form-control form-control-lg" placeholder="Enter your username" required autofocus>
           </div>
 
-          <!-- Password -->
           <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" required>
+            <label class="form-label fw-500">Password</label>
+            <input type="password" name="password" class="form-control form-control-lg" placeholder="Enter your password" required>
           </div>
 
-          <!-- Login Type (Portal Selection) -->
-          <div class="mb-3">
-            <label class="form-label">Login As</label>
-            <select name="login_type" class="form-select" required>
+          <div class="mb-4">
+            <label class="form-label fw-500">Login As</label>
+            <select name="login_type" class="form-select form-select-lg" required>
               <option value="">-- Select Portal --</option>
               <option value="user">Citizen</option>
               <option value="employee">Employee</option>
@@ -35,25 +59,22 @@
             </select>
           </div>
 
-          <button class="btn btn-primary w-100">Login</button>
+          <button class="btn btn-ct-primary btn-lg w-100 py-2 fw-600">Login</button>
         </form>
-        
-        <div class="text-center mt-3">
+
+        <hr class="my-4">
+
+        <div class="text-center">
           <span class="text-muted">New here?</span>
-          <a href="{% url 'register' %}" class="btn btn-link">
-            Sign Up
-          </a>
+          <a href="{% url 'register' %}" class="text-decoration-none fw-600 ms-1">Sign Up</a>
         </div>
 
-        <p class="text-muted text-center mt-3" style="font-size: 13px;">
+        <p class="text-muted text-center small mt-3 mb-0 px-2">
           Citizens can sign up freely.<br>
           Employees & Admins are provided credentials by the system.
         </p>
-
       </div>
     </div>
-
-  </div>
+  </section>
 </div>
-
 {% endblock %}

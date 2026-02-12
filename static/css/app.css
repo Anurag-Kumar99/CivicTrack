@@ -1,0 +1,296 @@
+/* CivicTrack UI System
+   - Design tokens (colors, typography, spacing)
+   - Layout primitives (container, sections)
+   - Components (navbar, buttons, cards, forms, badges, dashboard)
+*/
+
+:root {
+  /* Brand / Government-style palette */
+  --ct-primary: #0b5ed7;
+  --ct-primary-700: #084298;
+  --ct-success: #198754;
+  --ct-warning: #f59f00;
+  --ct-danger: #dc3545;
+  --ct-info: #0dcaf0;
+
+  /* Neutrals */
+  --ct-bg: #f6f8fb;
+  --ct-surface: #ffffff;
+  --ct-surface-2: #f1f5f9;
+  --ct-text: #0f172a;
+  --ct-muted: #64748b;
+  --ct-border: rgba(15, 23, 42, 0.12);
+
+  /* Radii / shadows */
+  --ct-radius: 14px;
+  --ct-radius-sm: 10px;
+  --ct-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.08);
+  --ct-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+
+  /* Spacing */
+  --ct-page-x: clamp(1rem, 3vw, 2rem);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--ct-bg);
+  color: var(--ct-text);
+}
+
+a {
+  color: var(--ct-primary-700);
+}
+
+a:hover {
+  color: var(--ct-primary);
+}
+
+/* Typography helpers (Bootstrap-like weights that aren't guaranteed by default) */
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+.fw-800 { font-weight: 800; }
+
+/* Page container */
+.ct-page {
+  padding-left: var(--ct-page-x);
+  padding-right: var(--ct-page-x);
+}
+
+/* Navbar */
+.navbar-ct {
+  background: linear-gradient(135deg, #0b5ed7 0%, #084298 100%) !important;
+  box-shadow: var(--ct-shadow-sm);
+}
+
+.navbar-ct .navbar-brand {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.ct-brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Ensure the brand mark looks correct on light surfaces too */
+.ct-hero .ct-brand-mark {
+  background: rgba(11, 94, 215, 0.10);
+  border-color: rgba(11, 94, 215, 0.18);
+  color: var(--ct-primary-700);
+}
+
+/* Buttons */
+.btn-ct-primary {
+  background: var(--ct-primary);
+  border-color: var(--ct-primary);
+  color: #fff;
+}
+
+.btn-ct-primary:hover,
+.btn-ct-primary:focus {
+  background: var(--ct-primary-700);
+  border-color: var(--ct-primary-700);
+  color: #fff;
+}
+
+.btn-ct-soft {
+  background: rgba(11, 94, 215, 0.12);
+  border-color: rgba(11, 94, 215, 0.18);
+  color: var(--ct-primary-700);
+}
+
+.btn-ct-soft:hover,
+.btn-ct-soft:focus {
+  background: rgba(11, 94, 215, 0.18);
+  border-color: rgba(11, 94, 215, 0.22);
+  color: var(--ct-primary-700);
+}
+
+/* Cards */
+.card-ct {
+  border: 1px solid var(--ct-border);
+  border-radius: var(--ct-radius);
+  background: var(--ct-surface);
+  box-shadow: var(--ct-shadow-sm);
+}
+
+.table {
+  --bs-table-bg: transparent;
+}
+
+.table thead th {
+  color: var(--ct-muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-ct-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--ct-border);
+  font-weight: 700;
+  background: linear-gradient(180deg, rgba(241, 245, 249, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* Forms */
+.form-control,
+.form-select {
+  border-radius: 12px;
+  border-color: var(--ct-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(11, 94, 215, 0.55);
+  box-shadow: 0 0 0 4px rgba(11, 94, 215, 0.14);
+}
+
+input[type="file"].form-control {
+  padding: 0.55rem;
+}
+
+/* Alerts */
+.alert-ct {
+  border-radius: var(--ct-radius-sm);
+  border: 1px solid var(--ct-border);
+}
+
+/* Hero / auth split layout */
+.ct-split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.ct-hero {
+  border-radius: var(--ct-radius);
+  background: radial-gradient(1200px 500px at 20% 10%, rgba(13, 202, 240, 0.25) 0%, rgba(11, 94, 215, 0.12) 40%, rgba(255, 255, 255, 0) 70%),
+              linear-gradient(135deg, rgba(11, 94, 215, 0.10) 0%, rgba(8, 66, 152, 0.06) 100%);
+  border: 1px solid var(--ct-border);
+  padding: 2rem;
+  box-shadow: var(--ct-shadow);
+  min-height: 100%;
+}
+
+.ct-hero h1 {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.ct-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.ct-feature {
+  border-radius: 14px;
+  border: 1px solid var(--ct-border);
+  background: rgba(255, 255, 255, 0.65);
+  padding: 1rem;
+}
+
+.ct-feature-title {
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+/* Dashboard shell */
+.ct-dashboard {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.ct-sidebar {
+  position: sticky;
+  top: 1.25rem;
+  align-self: start;
+  border-radius: var(--ct-radius);
+  border: 1px solid var(--ct-border);
+  background: var(--ct-surface);
+  box-shadow: var(--ct-shadow-sm);
+  overflow: hidden;
+}
+
+.ct-sidebar-header {
+  padding: 1.1rem 1.1rem;
+  border-bottom: 1px solid var(--ct-border);
+  background: linear-gradient(180deg, rgba(241, 245, 249, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.ct-nav {
+  padding: 0.5rem;
+}
+
+.ct-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  color: var(--ct-text);
+  text-decoration: none;
+}
+
+.ct-nav a:hover {
+  background: rgba(11, 94, 215, 0.08);
+}
+
+.ct-nav .ct-nav-muted {
+  color: var(--ct-muted);
+  font-size: 0.9rem;
+}
+
+/* Status badges (keep Bootstrap badges but align style) */
+.badge {
+  border-radius: 999px;
+}
+
+/* Footer */
+.ct-footer {
+  border-top: 1px solid var(--ct-border);
+  background: var(--ct-surface);
+}
+
+.ct-footer a {
+  color: var(--ct-muted);
+  text-decoration: none;
+}
+
+.ct-footer a:hover {
+  color: var(--ct-text);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .ct-split {
+    grid-template-columns: 1fr;
+  }
+
+  .ct-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ct-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .ct-sidebar {
+    position: relative;
+    top: auto;
+  }
+}

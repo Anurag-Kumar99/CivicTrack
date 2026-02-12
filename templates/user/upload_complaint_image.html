@@ -2,40 +2,34 @@
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-6">
+  <div class="col-md-6 col-lg-5">
 
-    <div class="card shadow">
-      <div class="card-body">
-
-        <h4 class="text-center mb-4">
-          📄 Upload Written Complaint (Paper)
-        </h4>
+    <div class="card card-ct overflow-hidden">
+      <div class="card-ct-header text-center">
+        <div class="h4 mb-0 fw-700">Upload Written Complaint</div>
+        <div class="text-muted small mt-1 fw-500">Scan or photo of paper complaint</div>
+      </div>
+      <div class="card-body p-4">
 
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
 
           <div class="mb-3">
-            <label class="form-label">
-              Upload Complaint Image
-            </label>
+            <label class="form-label fw-500">Complaint Image</label>
             <input type="file"
                    name="complaint_image"
-                   class="form-control"
+                   class="form-control form-control-lg"
                    accept="image/*"
                    required>
           </div>
 
-          <div class="alert alert-info small">
-            📌 Write complaint clearly on paper (English words like road, water, light).
+          <div class="alert alert-info alert-ct small mb-4">
+            <strong>Tip:</strong> Write the complaint clearly on paper using English words (road, water, light, etc.) for better recognition.
           </div>
 
-          <div class="d-flex justify-content-between">
-            <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">
-              Back
-            </a>
-            <button type="submit" class="btn btn-success">
-              Upload & Process
-            </button>
+          <div class="d-flex justify-content-between gap-2">
+            <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary">Back</a>
+            <button type="submit" class="btn btn-ct-primary px-4">Upload &amp; Process</button>
           </div>
         </form>
 
